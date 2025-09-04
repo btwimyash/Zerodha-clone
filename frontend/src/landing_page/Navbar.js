@@ -1,7 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 function Navbar() {
+  const navigate = useNavigate();
+  const [cookies, , removeCookie] = useCookies(["token"]);
+  const isAuthenticated = Boolean(cookies.token);
+
+  const handleLogout = () => {
+    removeCookie("token", { path: "/" });
+    navigate("/login", { replace: true });
+  };
   return (
     <nav
       className="navbar navbar-expand-lg border-bottom sticky-top"
@@ -31,11 +40,13 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <form className="d-flex ms-auto" role="search">
             <ul className="navbar-nav mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/login">
-                  Login
-                </Link>
-              </li>
+              {!isAuthenticated && (
+                <li className="nav-item">
+                  <Link className="nav-link active" aria-current="page" to="/login">
+                    Login
+                  </Link>
+                </li>
+              )}
               <li className="nav-item">
                 <Link className="nav-link active" aria-current="page" to="/signup">
                   Signup
@@ -61,6 +72,17 @@ function Navbar() {
                   Support
                 </Link>
               </li>
+              {isAuthenticated && (
+                <li className="nav-item">
+                  <button
+                    className="btn btn-outline-primary ms-2"
+                    type="button"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              )}
             </ul>
           </form>
         </div>
