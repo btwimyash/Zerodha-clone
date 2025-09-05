@@ -32,7 +32,7 @@ const HomePage = () => {
       }
       try {
         const { data } = await axios.post(
-          "http://localhost:3002/verify",
+          "https://zerodha-clone-6hkk.onrender.com/verify",
           {},
           { withCredentials: true }
         );
