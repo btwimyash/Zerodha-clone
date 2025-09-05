@@ -21,10 +21,11 @@ const Signup = async (req, res) => {
 
     const token = createSecretToken(user._id);
 
-    // Set cookie
+    // Set cookie (cross-site friendly in production)
     res.cookie("token", token, {
-      withCredentials: true,
-      httpOnly: false, // consider true for better security
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      secure: process.env.NODE_ENV === "production",
     });
 
     // ✅ Return token in response
@@ -61,8 +62,9 @@ const Login = async (req, res) => {
     const token = createSecretToken(user._id);
 
     res.cookie("token", token, {
-      withCredentials: true,
-      httpOnly: false,
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      secure: process.env.NODE_ENV === "production",
     });
 
     // ✅ Return token in response
