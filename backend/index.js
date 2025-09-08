@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -10,14 +11,27 @@ const MONGO_URL = process.env.MONGO_URL;
 
 // Middleware
 app.set("trust proxy", 1);
+const defaultAllowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://zerodha-clone-1-tezx.onrender.com",
+  "https://zerodha-clone-d-oda4.onrender.com",
+];
+
+const envAllowed = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const allowedOrigins = [...new Set([...defaultAllowedOrigins, ...envAllowed])];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "https://zerodha-clone-1-tezx.onrender.com",
-      "https://zerodha-clone-d-oda4.onrender.com",
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow non-browser requests
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -25,6 +39,7 @@ app.use(
 );
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Routes
 const authRoute = require("./routes/AuthRoute");

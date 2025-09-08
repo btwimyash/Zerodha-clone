@@ -35,11 +35,10 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
-        "https://zerodha-clone-6hkk.onrender.com/signup",
-        inputValue,
-        { withCredentials: true }
-      );
+      const apiUrl = process.env.REACT_APP_API_URL || "https://zerodha-clone-6hkk.onrender.com";
+      const { data } = await axios.post(`${apiUrl}/signup`, inputValue, {
+        withCredentials: true,
+      });
 
       const { success, message, token } = data;
 

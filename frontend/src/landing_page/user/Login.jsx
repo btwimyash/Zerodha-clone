@@ -35,11 +35,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
-        "https://zerodha-clone-6hkk.onrender.com/login",
-        inputValue,
-        { withCredentials: true }
-      );
+      const apiUrl = process.env.REACT_APP_API_URL || "https://zerodha-clone-6hkk.onrender.com";
+      const { data } = await axios.post(`${apiUrl}/login`, inputValue, {
+        withCredentials: true,
+      });
 
       console.log("Login response:", data);
 

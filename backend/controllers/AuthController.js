@@ -1,6 +1,7 @@
 const User = require("../models/UserModel");
 const { createSecretToken } = require("../util/SecretToken");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const Signup = async (req, res) => {
   try {
@@ -80,8 +81,30 @@ const Login = async (req, res) => {
   }
 };
 
-const userVerification = (req, res) => {
-  res.json({ message: "User verified successfully", success: true });
+const userVerification = async (req, res) => {
+  try {
+    // Prefer Authorization header, fallback to cookie
+    const authHeader = req.headers.authorization || "";
+    const headerToken = authHeader.startsWith("Bearer ")
+      ? authHeader.substring(7)
+      : null;
+    const cookieToken = req.cookies ? req.cookies.token : null;
+    const token = headerToken || cookieToken;
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "No token provided" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("_id email username");
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Invalid token" });
+    }
+
+    return res.json({ success: true, user });
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
 };
 
 module.exports = { Signup, Login, userVerification };

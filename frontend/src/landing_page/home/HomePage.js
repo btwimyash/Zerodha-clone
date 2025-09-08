@@ -31,10 +31,14 @@ const HomePage = () => {
         return;
       }
       try {
+        const apiUrl = process.env.REACT_APP_API_URL || "https://zerodha-clone-6hkk.onrender.com";
         const { data } = await axios.post(
-          "https://zerodha-clone-6hkk.onrender.com/verify",
+          `${apiUrl}/verify`,
           {},
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            headers: cookies.token ? { Authorization: `Bearer ${cookies.token}` } : {},
+          }
         );
         const { success, user } = data;
         if (success) {
