@@ -6,6 +6,7 @@ function Navbar() {
   const navigate = useNavigate();
   const [cookies, , removeCookie] = useCookies(["token"]);
   const isAuthenticated = Boolean(cookies.token);
+  const dashboardUrl = process.env.REACT_APP_DASHBOARD_URL || "http://localhost:3001";
 
   const handleLogout = () => {
     removeCookie("token", { path: "/" });
@@ -66,6 +67,16 @@ function Navbar() {
                 <Link className="nav-link active" to="/pricing">
                   Pricing
                 </Link>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link active"
+                  href={dashboardUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Dashboard
+                </a>
               </li>
               <li className="nav-item">
                 <Link className="nav-link active" to="/support">

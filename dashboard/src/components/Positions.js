@@ -8,10 +8,13 @@ const Positions = () => {
   const [allPositions, setAllPositions] = useState([]);
 
   useEffect(() => {
-    axios.get("https://zerodha-clone-6hkk.onrender.com/allPositions").then((res) => {
-      console.log(res.data);
-      setAllPositions(res.data);
-    });
+    const apiUrl = process.env.REACT_APP_API_URL || "https://zerodha-clone-6hkk.onrender.com";
+    axios
+      .get(`${apiUrl}/allPositions`, { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        setAllPositions(res.data);
+      });
   }, []);
 
   // import { positions } from "../data/data";

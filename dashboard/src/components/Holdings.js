@@ -8,10 +8,13 @@ const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState([]);
 
   useEffect(() => {
-    axios.get("https://zerodha-clone-6hkk.onrender.com/allHoldings").then((res) => {
-      console.log(res.data);
-      setAllHoldings(res.data);
-    });
+    const apiUrl = process.env.REACT_APP_API_URL || "https://zerodha-clone-6hkk.onrender.com";
+    axios
+      .get(`${apiUrl}/allHoldings`, { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        setAllHoldings(res.data);
+      });
   }, []);
 
   // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
