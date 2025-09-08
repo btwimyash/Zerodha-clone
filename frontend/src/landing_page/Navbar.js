@@ -71,7 +71,7 @@ function Navbar() {
               <li className="nav-item">
                 <a
                   className="nav-link active"
-                  href={dashboardUrl}
+                  href="https://zerodha-clone-2-sb2n.onrender.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
